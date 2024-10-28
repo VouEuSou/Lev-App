@@ -1,0 +1,33 @@
+
+#data {
+    margin-left: 100px;
+}
+
+#bottomside {
+    display: none;
+}
+
+#statusclientmobile{
+    display: none;
+}
+
+@media screen and (max-width: 768px) {
+    #preco {
+        font-size: 20px;
+    }
+    #data {
+        margin-left: 10px;
+    }
+    #rightside {
+        display: none;
+    }
+    #bottomside {
+        display: block;
+    }
+    #statusclient {
+        display: none;
+    }
+    #statusclientmobile{
+        display: block;
+    }
+}

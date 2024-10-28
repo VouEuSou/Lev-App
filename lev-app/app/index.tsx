@@ -3,7 +3,6 @@ import { View, Image, StyleSheet, ToastAndroid } from "react-native";
 import theme from "./theme.json";
 import { Layout, Tab, TabView, Input, Button } from '@ui-kitten/components';
 import { useForm, Controller } from 'react-hook-form';
-import { UserContext } from "../contexts/user"; // Import UserContext
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useContext } from "react";
 import { useRouter } from "expo-router";
@@ -15,8 +14,7 @@ export default function Index() {
   const [selectedIndex, setSelectedIndex] = React.useState(0);
   const shouldLoadComponent = (index: number): boolean => index === selectedIndex;
   const router = useRouter();
-  const { mudaId, mudaNome, mudaEmail, mudaIsAdmin, mudaAuth, mudaIsDriver } =
-  useContext(UserContext);
+
   // React Hook Form
   const {
     control, handleSubmit, formState: { errors }
@@ -34,8 +32,7 @@ export default function Index() {
 
   async function verificaLogin(data: any) {
     console.log("entrou");
-    console.log(data);
-    const host = "http://192.168.0.231:3001"; // Replace with actual host
+    const host = "http://192.168.0.238:3001"; // Replace with actual host
   
     try {
       const response = await fetch(`${host}/login`, {
@@ -55,15 +52,7 @@ export default function Index() {
       }
   
       const user = await response.json();
-  
-      // Update the user context
-      mudaId(user.usuario_id);
-      mudaNome(user.usuario_nome);
-      mudaEmail(user.usuario_email);
-      mudaIsAdmin(user.usuario_isAdm);
-      mudaAuth(user.token);
-      mudaIsDriver(user.usuario_isDriver);
-  
+
       // Store the user data in AsyncStorage
       const userData = {
         id: user.usuario_id,
@@ -84,7 +73,7 @@ export default function Index() {
         router.push("/driverIndex" as never);
       } else {
         if (Platform.OS === "android") {
-        ToastAndroid.show("Usuário é um cliente. Aplicativo somente para motoristas", ToastAndroid.SHORT);
+        ToastAndroid.show("Usuário é um cliente. Aplicativo somente para motoristas", ToastAndroid.LONG);
         } else {
         showToast("Usuário é um cliente. Aplicativo somente para motoristas");
         }
@@ -92,7 +81,7 @@ export default function Index() {
     } catch (error: any) {
       console.log(error);
       if (Platform.OS === "android") {
-        ToastAndroid.show("Usuário ou senha incorretos", ToastAndroid.SHORT);
+        ToastAndroid.show("Usuário ou senha incorretos", ToastAndroid.LONG);
       } else {
         showToast("Usuário ou senha incorretos");
       }
