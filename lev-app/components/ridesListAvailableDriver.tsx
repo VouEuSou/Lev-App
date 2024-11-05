@@ -1,14 +1,32 @@
 import React, { useState } from 'react';
 import { Button, Card, Modal, Text, Layout, Divider, ListItem, List, Icon } from '@ui-kitten/components';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { View, StyleSheet } from 'react-native';
+import { View, StyleSheet, Animated  } from 'react-native';
 import { useRouter } from "expo-router";
 
 export default function RidesListClient({ ride }: { ride: any }) {
   const [visible, setVisible] = useState(false);
+  const [animation] = useState(new Animated.Value(0));
+
   const host = "https://beloved-burro-stunning.ngrok-free.app";
-  const openModal = () => setVisible(true);
-  const closeModal = () => setVisible(false);
+
+  
+  const openModal = () => {
+    setVisible(true);
+    Animated.spring(animation, {
+      toValue: 1,
+      useNativeDriver: true,
+    }).start();
+  };
+
+  const closeModal = () => {
+    Animated.timing(animation, {
+      toValue: 0,
+      duration: 200,
+      useNativeDriver: true,
+    }).start(() => setVisible(false));
+  };
+
   const router = useRouter();
 
   const confirmRide = async (id: string) => {
@@ -58,6 +76,20 @@ export default function RidesListClient({ ride }: { ride: any }) {
       </Card>
 
       <Modal visible={visible} backdropStyle={styles.backdrop} onBackdropPress={closeModal}>
+      <Animated.View style={[
+          styles.modalContainer,
+          {
+            transform: [
+              {
+                scale: animation.interpolate({
+                  inputRange: [0, 1],
+                  outputRange: [0.8, 1],
+                }),
+              },
+            ],
+            opacity: animation,
+          },
+        ]}>
         <Card style={styles.modal} disabled={true}>
           <Text style={styles.cardText} category="h5">Detalhes da corrida:</Text>
           <Divider style={styles.divider} />
@@ -71,6 +103,7 @@ export default function RidesListClient({ ride }: { ride: any }) {
             Confirmar
           </Button>
         </Card>
+        </Animated.View>
       </Modal>
       </>
   );
@@ -81,7 +114,7 @@ const styles = StyleSheet.create({
     flex: 1,
     marginVertical: 10,
     borderRadius: 20,
-    minWidth: 350,
+    minWidth: '100%',
     width: '100%',
     backgroundColor: '#FFFF',
     alignSelf: 'center'},
@@ -121,5 +154,9 @@ const styles = StyleSheet.create({
   modal: {
     backgroundColor: '#FFFF',
     borderRadius: 20,
-    alignItems: 'center' }
+    alignItems: 'center' },
+  modalContainer: {
+    width: '90%',
+    alignSelf: 'center',
+    },
 });

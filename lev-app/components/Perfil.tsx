@@ -11,7 +11,7 @@ export const Perfil = () => {
     try {
       await AsyncStorage.removeItem('user_logado'); 
 
-      router.push("/" as never);
+      router.replace("/" as never);
     } catch (error) {
       console.error('Error during logout:', error);
     }

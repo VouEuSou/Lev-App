@@ -15,6 +15,27 @@ export default function Index() {
   const shouldLoadComponent = (index: number): boolean => index === selectedIndex;
   const router = useRouter();
 
+
+  React.useEffect(() => {
+    const checkStoredUser = async () => {
+      try {
+        const userData = await AsyncStorage.getItem('user_logado');
+        if (userData) {
+          const user = JSON.parse(userData);
+          if (user.isDriver) {
+            router.replace('/driverIndex');
+          }
+        }
+      } catch (error) {
+        console.log('Error checking stored user:', error);
+      }
+    };
+
+    checkStoredUser();
+  }, []);
+
+
+
   // React Hook Form
   const {
     control, handleSubmit, formState: { errors }
@@ -69,7 +90,7 @@ export default function Index() {
   
       // Navigate based on user role
       if (user.usuario_isDriver) {
-        router.push("/driverIndex" as never);
+        router.replace("/driverIndex" as never);
       } else {
         if (Platform.OS === "android") {
         ToastAndroid.show("Usuário é um cliente. Aplicativo somente para motoristas", ToastAndroid.LONG);
@@ -102,7 +123,7 @@ export default function Index() {
     >
       <Image
         source={require('../assets/images/lev_green.png')}
-        style={{ margin: 20, width: 250, height: 250, alignSelf: "center" }}
+        style={{marginTop: 100, marginBottom: 50, width: 300, height: 186, objectFit: 'contain', alignSelf: "center" }}
       />
       <Layout style={styles.container}>
       <TabView

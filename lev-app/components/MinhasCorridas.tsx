@@ -104,7 +104,7 @@ export const MinhasCorridas = () => {
 const styles = StyleSheet.create({
     page: {
         flex: 1,
-        marginTop: 50,
+        marginTop: 20,
         backgroundColor: '#1a1c51',
         alignItems: 'center',
     },

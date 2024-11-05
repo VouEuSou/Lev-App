@@ -102,7 +102,7 @@ export const Inicio = () => {
 const styles = StyleSheet.create({
     page: {
         flex: 1,
-        marginTop: 50,
+        marginTop: 20,
         backgroundColor: '#1a1c51',
         alignItems: 'center',
     },
@@ -113,7 +113,7 @@ const styles = StyleSheet.create({
         marginBottom: 20,
     },
     rideListContainer: {
-        marginHorizontal: 10,
+        marginHorizontal: 20,
     },
 });
 

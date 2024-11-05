@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "lev-app",
+    "name": "Lev",
     "slug": "lev-app",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -10,7 +10,7 @@
     "splash": {
       "image": "./assets/images/splash.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#1a1c51"
     },
     "ios": {
       "supportsTablet": true
@@ -18,20 +18,32 @@
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
-      }
+        "backgroundColor": "#26dd85"
+      },
+      "package": "com.voueusou.levapp"
     },
     "web": {
       "bundler": "metro",
       "output": "static",
       "favicon": "./assets/images/favicon.png",
-      "build": { "babel": { "include": [ "@ui-kitten/components" ] } }
+      "build": {
+        "babel": {
+          "include": [
+            "@ui-kitten/components"
+          ]
+        }
+      }
     },
     "plugins": [
       "expo-router"
     ],
     "experiments": {
       "typedRoutes": true
+    },
+    "extra": {
+      "eas": {
+        "projectId": "00a83b07-0992-44f4-b1aa-dfbc7318c8a1"
+      }
     }
   }
 }
