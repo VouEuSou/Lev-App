@@ -1,119 +1,125 @@
-import { Button, Box, Card, CardHeader, CardBody, Spacer, Flex, HStack } from '@chakra-ui/react';
-import { Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton } from '@chakra-ui/react';
-import { useState, useContext } from 'react';
-import { UserContext } from '@/contexts/user';
-import './ridesList.css';
-export default function RidesListClient(props) {
-  const [isOpen, setIsOpen] = useState(false);
-  const openModal = () => setIsOpen(true);
-  const closeModal = () => setIsOpen(false);
-  const host = process.env.NEXT_PUBLIC_HOST;
-  const { UserAuth } = useContext(UserContext);
+import React, { useState } from 'react';
+import { Button, Card, Modal, Text, Layout, Divider, ListItem, List, Icon } from '@ui-kitten/components';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { View, StyleSheet } from 'react-native';
+import { useRouter } from "expo-router";
 
-  async function confirmRide(id) {
-    const response = await fetch(`${host}/pacotes/aceitar/${id}`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `${UserAuth}`
-      },
-    });
-    const data = await response.json();
-    if (data.status === 'Encomenda aceita pelo entregador') {
-      window.location.href = `/ride/${id}`;
-    } else {
-      alert('Error!');
+export default function RidesListClient({ ride }: { ride: any }) {
+  const [visible, setVisible] = useState(false);
+  const host = "https://beloved-burro-stunning.ngrok-free.app";
+  const openModal = () => setVisible(true);
+  const closeModal = () => setVisible(false);
+  const router = useRouter();
+
+  const confirmRide = async (id: string) => {
+    const UserAuth = await AsyncStorage.getItem('user_logado');
+
+    if (!UserAuth) {
+      console.error('User authentication data not found');
+      return;
     }
-  }
 
-  const distancia_km = (props.ride.distancia / 1000) + 0.6;
-  const ano = props.ride.createdAt.substring(0, 4);
-  const mes = props.ride.createdAt.substring(5, 7);
-  const dia = props.ride.createdAt.substring(8, 10);
-  const data = `${dia}/${mes}/${ano}`;
-  const vehicleType = props.ride.isCarro ? 'Carro' : 'Moto';
+    try {
+      const parsedUserAuth = JSON.parse(UserAuth);
+      const response = await fetch(`${host}/pacotes/aceitar/${id}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `${parsedUserAuth.auth}`,
+        },
+      });
+      const data = await response.json();
+      if (data.status === 'Encomenda aceita pelo entregador') {
+        // Navigate to the ride details page or perform another action
+        alert('Corrida aceita com sucesso');
+        closeModal();
+        router.push('/driverIndex')
+      } else {
+        alert(`Erro: ${response.status}`);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const distancia_km = (ride.distancia / 1000 + 0.6).toFixed(2);
+  const data = `${ride.createdAt.substring(8, 10)}/${ride.createdAt.substring(5, 7)}/${ride.createdAt.substring(0, 4)}`;
+  const vehicleType = ride.isCarro ? 'Carro' : 'Moto';
+
   return (
     <>
-      <Card mt={'20px'} style={{ backgroundColor: '#FBFBFB', boxShadow: '0px 5px 14.5px #B2B2B2', borderRadius: '27px', paddingLeft: '10px', paddingRight: '10px' }}>
-        <CardHeader mt={'5px'}>
-          <Flex>
-            <Box>
-              <h2 id='preco' style={{ color: '#1a1c51', fontWeight: 'bold', fontSize: '140%' }}>R$ {props.ride.preco}</h2>
-            </Box>
-            <Box>
-              <h2 id='km' style={{ color: '#000000', fontWeight: 'bold', fontSize: '100%', marginLeft: '12px', marginTop: '5px', backgroundColor: '#D9D9D9', borderRadius: '20px', paddingInline: '8px' }}>
-                {distancia_km.toFixed(2)} km
-              </h2>
-            </Box>
-            <Spacer />
-            <Box>
-              <h2 id='data' style={{ color: '#000000', fontWeight: 'bold', fontSize: '100%' }}>{data}</h2>
-            </Box>
-          </Flex>
-        </CardHeader>
-        <CardBody>
-          <HStack mb={'20px'}>
-            <Box id='ab'>
-              <img src='/pointab.svg' width='30px' style={{ marginLeft: '0px' }} height='0px' alt="Point A to B" />
-            </Box>
-            <Box id='leftside'>
-              <h2 style={{ color: '#484848', fontWeight: 'bold', fontSize: '100%', marginBottom: '42px', marginTop: '1px', maxWidth: '250px' }}>{props.ride.origem_endereco}</h2>
-              <h2 style={{ color: '#989898', fontWeight: 'bold', fontSize: '100%', maxWidth: '250px', marginTop: '30px', filter: 'blur(4px)' }}>{props.ride.destino_endereco}</h2>
-            </Box>
-            <Box id='rightside' marginLeft={'40px'}>
-              <h2 style={{ color: '#484848', fontWeight: 'bold', fontSize: '100%', marginTop: '10px' }}>Descrição</h2>
-              <h2 style={{ color: '#000000', fontWeight: 'bold', fontSize: '100%', maxWidth: '150px' }}>{props.ride.descricao}</h2>
-              <h2 style={{ color: '#484848', fontWeight: 'bold', fontSize: '100%', }}>Veículo solicitado:</h2>
-              <h2 style={{ color: '#000000', fontWeight: 'bold', fontSize: '100%', }}>{vehicleType}</h2>
-
-              <Button
-                colorScheme='brand_green'
-                style={{ color: '#1a1c51', fontWeight: 'bold', fontSize: '100%', marginLeft: '100px', marginTop: '40px', borderRadius: '30px', paddingTop: '0px' }}
-                onClick={openModal}
-              >
-                Aceitar
-              </Button>
-            </Box>
-          </HStack>
-          <Box id='bottomside'>
-            <h2 style={{ color: '#484848', fontWeight: 'bold', fontSize: '100%', marginTop: '10px' }}>Descrição</h2>
-            <h2 style={{ color: '#000000', fontWeight: 'bold', fontSize: '100%', maxWidth: '150px' }}>{props.ride.descricao}</h2>
-            <h2 style={{ color: '#484848', fontWeight: 'bold', fontSize: '100%', }}>Veículo solicitado:</h2>
-            <h2 style={{ color: '#000000', fontWeight: 'bold', fontSize: '100%', }}>{vehicleType}</h2>
-
-            <Flex justifyContent="flex-end">
-              <Button
-                colorScheme='brand_green'
-                style={{ color: '#1a1c51', fontWeight: 'bold', fontSize: '100%', marginTop: '20px', borderRadius: '30px', paddingTop: '0px', paddingInline: '20%' }}
-                onClick={openModal}
-              >
-                Aceitar
-              </Button>
-            </Flex>
-
-          </Box>
-        </CardBody>
+      <Card style={styles.card} onPress={openModal}>
+        <Text category="h5" style={styles.price}>R$ {ride.preco}</Text>
+        <Text style={styles.cardText} category="label">{distancia_km} km</Text>
+        <Text style={styles.cardText} category="label">{data}</Text>
+        <Text category="s1" style={styles.description}>Descrição: {ride.descricao}</Text>
+        <Text style={styles.cardText} category="label">Veículo solicitado: {vehicleType}</Text>
+        <Button style={styles.button} onPress={openModal}>Aceitar</Button>
       </Card>
-      <Modal isOpen={isOpen} onClose={closeModal}>
-        <ModalOverlay />
-        <ModalContent minWidth={'35vw'}>
-          <ModalHeader>Detalhes da corrida:</ModalHeader>
-          <ModalCloseButton />
-          <ModalBody>
-            <p style={{ fontWeight: 'bold' }}>Preço: R$ {props.ride.preco}</p>
-            <p style={{ fontWeight: 'bold' }}>Distância: {distancia_km.toFixed(2)} km</p>
-            <p style={{ fontWeight: 'bold' }}>Data: {data}</p>
-            <p style={{ fontWeight: 'bold' }}>Origem: {props.ride.origem_endereco}</p>
-            <p style={{ fontWeight: 'bold' }}>Veículo: {vehicleType}</p>
-          </ModalBody>
-          <ModalFooter>
-            <Button colorScheme="danger" style={{ borderRadius: '30px' }} mr={3} onClick={closeModal}>Cancelar</Button>
-            <Button colorScheme="brand_green" style={{ color: '#1a1c51', borderRadius: '30px' }} onClick={() => { confirmRide(props.ride.id); closeModal(); }}>
-              Confirmar
-            </Button>
-          </ModalFooter>
-        </ModalContent>
+
+      <Modal visible={visible} backdropStyle={styles.backdrop} onBackdropPress={closeModal}>
+        <Card style={styles.modal} disabled={true}>
+          <Text style={styles.cardText} category="h5">Detalhes da corrida:</Text>
+          <Divider style={styles.divider} />
+          <Text style={styles.cardText}>Preço: R$ {ride.preco}</Text>
+          <Text style={styles.cardText}>Distância: {distancia_km} km</Text>
+          <Text style={styles.cardText}>Data: {data}</Text>
+          <Text style={styles.cardText}>Origem: {ride.origem_endereco}</Text>
+          <Text style={styles.cardText}>Veículo: {vehicleType}</Text>
+          <Button style={styles.cancelButton} onPress={closeModal}>Cancelar</Button>
+          <Button style={styles.confirmButton} onPress={() => { confirmRide(ride.id); closeModal(); }}>
+            Confirmar
+          </Button>
+        </Card>
       </Modal>
-    </>
+      </>
   );
 }
+
+const styles = StyleSheet.create({
+  card: {
+    flex: 1,
+    marginVertical: 10,
+    borderRadius: 20,
+    minWidth: 350,
+    width: '100%',
+    backgroundColor: '#FFFF',
+    alignSelf: 'center'},
+
+    cardText: {
+      color: '#1a1c51',
+      fontSize: 16,
+      marginBottom: 8 },
+
+  price: {
+    color: '#1a1c51',
+    fontWeight: 'bold',
+    fontSize: 22,
+    marginBottom: 8 },
+
+  description: {
+    color: '#1a1c51',
+    marginBottom: 10 },
+
+  button: {
+    marginTop: 20,
+    marginBottom: 10,
+    borderRadius: 20,},
+
+  divider: {
+    marginVertical: 10 },
+
+  cancelButton: {
+    marginTop: 10, backgroundColor: '#FF5050',borderColor: '#FF5050' , borderRadius: 20,  color: '#FFFF' },
+
+  confirmButton: {
+    marginTop: 10, borderRadius: 20, color: '#FFFF' },
+
+  backdrop: {
+    backgroundColor: 'rgba(0, 0, 0, 0.5)' },
+
+  modal: {
+    backgroundColor: '#FFFF',
+    borderRadius: 20,
+    alignItems: 'center' }
+});

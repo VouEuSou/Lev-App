@@ -4,7 +4,7 @@ import { ScrollView, StyleSheet } from 'react-native';
 import RidesListAssignedDriver from '@/components/ridesListAssignedDriver';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const host = "http://192.168.0.238:3001";
+const host = "https://beloved-burro-stunning.ngrok-free.app";
 interface Ride {
   id: number;
   descricao: string;
@@ -104,7 +104,7 @@ export const MinhasCorridas = () => {
 const styles = StyleSheet.create({
     page: {
         flex: 1,
-        paddingTop: 20,
+        marginTop: 50,
         backgroundColor: '#1a1c51',
         alignItems: 'center',
     },
@@ -115,7 +115,7 @@ const styles = StyleSheet.create({
         marginBottom: 20,
     },
     rideListContainer: {
-        paddingHorizontal: 10,
+        marginHorizontal: 10,
     },
 });
 

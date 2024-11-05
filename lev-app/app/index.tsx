@@ -32,7 +32,7 @@ export default function Index() {
 
   async function verificaLogin(data: any) {
     console.log("entrou");
-    const host = "http://192.168.0.238:3001"; // Replace with actual host
+    const host = "https://beloved-burro-stunning.ngrok-free.app"; 
   
     try {
       const response = await fetch(`${host}/login`, {
@@ -48,12 +48,11 @@ export default function Index() {
   
       if (!response.ok) {
         const errorMessage = await response.json();
-        throw new Error(errorMessage.message); // Throw error from server
+        throw new Error(errorMessage.message); 
       }
   
       const user = await response.json();
 
-      // Store the user data in AsyncStorage
       const userData = {
         id: user.usuario_id,
         nome: user.usuario_nome,

@@ -19,7 +19,7 @@ export const Perfil = () => {
 
   return (
     <Layout style={styles.page}>
-      <Text category="h1">Perfil</Text>
+      <Text category="h1" style={styles.title}>Perfil</Text>
       <Button onPress={logout}>Logout</Button>
     </Layout>
   );
@@ -28,7 +28,14 @@ export const Perfil = () => {
 const styles = StyleSheet.create({
   page: {
     flex: 1,
-    paddingTop: 20,
+    marginTop: 50,
     alignItems: 'center',
   },
+  title: {
+    color: '#FFFF',
+    fontWeight: 'bold',
+    fontSize: 20,
+    marginBottom: 20,
+  }
+  
 });

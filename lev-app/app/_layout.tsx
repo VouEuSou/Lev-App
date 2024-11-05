@@ -1,9 +1,9 @@
 import { Stack } from "expo-router";
 import * as eva from '@eva-design/eva';
-import { ApplicationProvider } from '@ui-kitten/components';
+import { ApplicationProvider, IconRegistry  } from '@ui-kitten/components';
 import { default as theme } from './theme.json'; // <-- Import app theme
 import { RootSiblingParent } from 'react-native-root-siblings';
-
+import { EvaIconsPack } from '@ui-kitten/eva-icons';
 const customEvaTheme = {
   ...eva.dark, // or eva.dark for dark mode
   // Override colors with your theme
@@ -17,6 +17,7 @@ const customEvaTheme = {
 export default function RootLayout() {
   return (
     <RootSiblingParent>
+    <IconRegistry icons={EvaIconsPack} />
     <ApplicationProvider {...eva} theme={{ ...customEvaTheme, ...theme }}>
     <Stack screenOptions={{ headerShown: false }}>
       <Stack.Screen name="index" />
