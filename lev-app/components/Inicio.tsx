@@ -78,7 +78,8 @@ export const Inicio = () => {
                     },
                 });
                 const dados: Ride[] = await response.json();
-                console.log('Rides:', dados);
+                const sortedRides = dados.sort((a, b) => new Date(b.data).getTime() - new Date(a.data).getTime());
+                setRides(sortedRides);
                 setRides(dados);
             } else {
                 console.log('User not authenticated, skipping fetch');
@@ -102,7 +103,7 @@ export const Inicio = () => {
 const styles = StyleSheet.create({
     page: {
         flex: 1,
-        marginTop: 20,
+        marginTop: 40,
         backgroundColor: '#1a1c51',
         alignItems: 'center',
     },
