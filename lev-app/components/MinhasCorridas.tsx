@@ -3,6 +3,7 @@ import { Layout, Text } from '@ui-kitten/components';
 import { ScrollView, StyleSheet } from 'react-native';
 import RidesListAssignedDriver from '@/components/ridesListAssignedDriver';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { router } from 'expo-router';
 
 const host = "https://beloved-burro-stunning.ngrok-free.app";
 interface Ride {
@@ -94,8 +95,8 @@ export const MinhasCorridas = () => {
             <Text category="h1" style={styles.title}>Minhas Corridas</Text>
             <ScrollView contentContainerStyle={styles.rideListContainer}>
                 {rides.map((ride) => (
-                    <RidesListAssignedDriver key={ride.id} ride={ride} />
-                ))}
+                    <RidesListAssignedDriver key={ride.id} ride={ride} host={host} />
+                )) || router.replace('/')}
             </ScrollView>
         </Layout>
     );

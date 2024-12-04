@@ -3,6 +3,7 @@ import { Layout, Text } from '@ui-kitten/components';
 import { ScrollView, StyleSheet } from 'react-native';
 import RidesListAvailableDriver from '@/components/ridesListAvailableDriver';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { router } from 'expo-router';
 
 const host = "https://beloved-burro-stunning.ngrok-free.app";
 interface Ride {
@@ -86,18 +87,17 @@ export const Inicio = () => {
 
         getRides();
     }, []);
-
-    return (
-        <Layout style={styles.page}>
-            <Text category="h1" style={styles.title}>Pacotes disponíveis</Text>
-            <ScrollView contentContainerStyle={styles.rideListContainer}>
-                {rides.map((ride) => (
-                    <RidesListAvailableDriver key={ride.id} ride={ride} />
-                ))}
-            </ScrollView>
-        </Layout>
-    );
-};
+      return (
+          <Layout style={styles.page}>
+              <Text category="h1" style={styles.title}>Pacotes disponíveis</Text>
+              <ScrollView contentContainerStyle={styles.rideListContainer}>
+                  {rides?.map((ride) => (
+                      <RidesListAvailableDriver key={ride.id} ride={ride} />
+                  )) || router.replace('/')}
+              </ScrollView>
+          </Layout>
+      );
+  };
 
 const styles = StyleSheet.create({
     page: {
